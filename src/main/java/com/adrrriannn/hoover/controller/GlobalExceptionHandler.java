@@ -30,16 +30,9 @@ public class GlobalExceptionHandler {
         FieldError fieldError = bindingResult.getFieldError();
 
         BadParameterException badParameterException =  new BadParameterException(fieldError.getDefaultMessage(), ExceptionCode.fromString(fieldError.getCode()));
-        return convertBadParameterException(request, badParameterException);
+        return new ExceptionMessage(badParameterException, HttpStatus.BAD_REQUEST, request.getRequestURI());
     }
 
-    @ExceptionHandler(BadParameterException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ExceptionMessage handleBadParameterException(HttpServletRequest request, BadParameterException ex) {
-
-        return convertBadParameterException(request, ex);
-    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -49,7 +42,4 @@ public class GlobalExceptionHandler {
         return new ExceptionMessage(internalServerException, HttpStatus.INTERNAL_SERVER_ERROR, request.getRequestURI());
     }
 
-    private ExceptionMessage convertBadParameterException(HttpServletRequest request, BadParameterException badParameterException) {
-        return new ExceptionMessage(badParameterException, HttpStatus.BAD_REQUEST, request.getRequestURI());
-    }
 }
